@@ -2,23 +2,48 @@
 
 This repository is a project-based learning environment for learning AI Agent development with Python.
 
-The project is intentionally developed step by step.
+The project is intentionally developed step by step, with an emphasis on understanding the underlying concepts and architecture before introducing higher-level frameworks.
 
-### Current Stage
+## Current Stage
 
-The project is currently at the initial architecture stage.
+The project has completed its initial architecture and testing foundation.
 
-Implemented:
+Implemented so far:
 
 * Python virtual environment
-* Git repository
+* Git and GitHub workflow
+* Standard project structure
 * Environment variable management
 * `.env` / `.env.example`
-* Basic application structure
+* Dependency management
 * Mock LLM
-* Initial LLM abstraction
+* LLM abstraction
+* Dependency Injection
+* Initial automated test with pytest
 
-### Learning Roadmap
+Current test status:
+
+```text
+1 passed
+```
+
+## Current Architecture
+
+```text
+Application
+    ↓
+Agent Execution Function
+    ↓
+LLM Abstraction
+    ↓
+Mock LLM
+    ↓
+Response
+```
+
+The LLM implementation is intentionally abstracted so that a real provider can be introduced later without changing the core Agent logic.
+
+## Learning Roadmap
 
 ```text
 Python
@@ -44,15 +69,24 @@ Multi-Agent
 Production AI Agent
 ```
 
-### Development Principle
+## Development Principles
 
-The project is developed with a mentor-style, project-based learning approach.
+This project follows a mentor-style, project-based learning approach.
 
-Each concept is first understood, then implemented, tested, and verified before moving to the next stage.
+For each topic:
 
-The project does not currently require a paid LLM API because a Mock LLM is being used during the initial learning stages.
+1. Understand the concept.
+2. Understand the architectural reason.
+3. Implement a small piece.
+4. Run it.
+5. Test it.
+6. Verify the behavior.
+7. Update the documentation.
+8. Commit the known-good state.
 
-### Run the Current Project
+The goal is to develop the ability to design and build AI Agent systems independently, not simply reproduce code examples.
+
+## Running the Project
 
 Activate the virtual environment:
 
@@ -60,8 +94,53 @@ Activate the virtual environment:
 source .venv/bin/activate
 ```
 
-Run the application from the project root:
+Run the application:
 
 ```bash
 python -m app.main
 ```
+
+Run tests:
+
+```bash
+python -m pytest
+```
+
+## Repository Workflow
+
+Before starting work:
+
+```bash
+git pull
+```
+
+After completing a verified change:
+
+```bash
+git status
+git add .
+git commit -m "..."
+git push origin master
+```
+
+The `master` branch is currently used as the main development branch.
+
+## Security
+
+Real API keys and secrets must never be committed to Git.
+
+Use:
+
+```text
+.env
+```
+
+for local secrets and:
+
+```text
+.env.example
+```
+
+for documenting required environment variables.
+
+The `.env` file is excluded through `.gitignore`.
