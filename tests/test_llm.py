@@ -1,8 +1,19 @@
-from  app.llm.mock_llm import MockLLM
+import pytest
 
-def test_mock_llm_generates_response():
+from app.llm.mock_llm import MockLLM
+
+
+@pytest.mark.parametrize(
+    "prompt",
+    [
+        "Hello",
+        "What is tool calling?",
+        "Why do AI agents need tools?",
+    ],
+)
+def test_mock_llm_generates_response(prompt):
     llm = MockLLM()
 
-    response = llm.generate("Hello")
+    response = llm.generate(prompt)
 
-    assert response == "Mock response to: Hello"
+    assert response == f"Mock response to: {prompt}"

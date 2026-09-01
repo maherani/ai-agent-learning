@@ -1,20 +1,24 @@
-from app.llm.interface import LLM
+from app.agents.agent import Agent
 from app.llm.mock_llm import MockLLM
-
-
-def run_agent(llm: LLM, prompt: str) -> str:
-    return llm.generate(prompt)
+from app.tools.calculator import add, multiply
+from app.tools.registry import ToolRegistry
 
 
 def main():
-    llm = MockLLM()
+    registry = ToolRegistry()
 
-    response = run_agent(
-        llm,
-        "Why do AI agents need tools?",
+    registry.register("add", add)
+    registry.register("multiply", multiply)
+
+    agent = Agent(
+        llm=MockLLM(),
+        tools=registry,
     )
 
-    print(response)
+    result = agent.run("CALCULATE 25 * 18")
+#    result = agent.run("Hello")
+
+    print(result)
 
 
 if __name__ == "__main__":
