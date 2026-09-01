@@ -6,8 +6,8 @@ from app.tools.models import ToolCall
 class MockLLM(LLM):
     def generate(self, prompt: str) -> LLMResponse:
         if (
-            "User: CALCULATE 25 * 18" in prompt
-            and "Tool Result: 450" not in prompt
+            "CALCULATE 25 * 18" in prompt
+            and "tool: 450" not in prompt
         ):
             return LLMResponse(
                 tool_call=ToolCall(
@@ -16,7 +16,7 @@ class MockLLM(LLM):
                 )
             )
 
-        if "Tool Result: 450" in prompt:
+        if "tool: 450" in prompt:
             return LLMResponse(
                 text="25 multiplied by 18 equals 450."
             )

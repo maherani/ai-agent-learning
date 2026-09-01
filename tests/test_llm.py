@@ -16,4 +16,5 @@ def test_mock_llm_generates_response(prompt):
 
     response = llm.generate(prompt)
 
-    assert response == f"Mock response to: {prompt}"
+    assert response.text == f"Mock response to: {prompt}"
+    assert response.tool_call is None

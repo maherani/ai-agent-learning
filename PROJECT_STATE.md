@@ -34,7 +34,31 @@ Production AI Agent
 
 ## Current Architecture
 
-The project is currently at the Agent foundation stage.
+The project currently contains the foundational components of a simple tool-using Agent.
+
+```text
+User
+  ↓
+Agent
+  ↓
+AgentState
+  ↓
+LLM
+  ↓
+ToolCall
+  ↓
+ToolRegistry
+  ↓
+Tool
+  ↓
+Tool Result
+  ↓
+AgentState
+  ↓
+LLM
+  ↓
+Final Answer
+```
 
 Current structure:
 
@@ -46,6 +70,8 @@ ai-agent-learning/
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── agent.py
+│   │   ├── messages.py
+│   │   ├── roles.py
 │   │   └── state.py
 │   ├── llm/
 │   │   ├── __init__.py
@@ -59,7 +85,10 @@ ai-agent-learning/
 │       └── registry.py
 ├── tests/
 │   ├── __init__.py
-│   └── test_llm.py
+│   ├── test_agent.py
+│   ├── test_llm.py
+│   ├── test_messages.py
+│   └── test_tools.py
 ├── .env
 ├── .env.example
 ├── .gitignore
@@ -69,153 +98,136 @@ ai-agent-learning/
 └── .venv/
 ```
 
-Current execution flow:
-
-```text
-User Prompt
-    ↓
-Agent
-    ↓
-AgentState
-    ↓
-LLM Abstraction
-    ↓
-Mock LLM
-    │
-    ├── Final Text ──────────────→ Final Answer
-    │
-    └── Tool Call
-            ↓
-       Tool Registry
-            ↓
-           Tool
-            ↓
-        Tool Result
-            ↓
-          State
-            ↓
-           LLM
-            ↓
-       Final Answer
-```
-
-The Agent receives its LLM implementation and Tool Registry through dependency injection.
-
 ## Implemented Features
 
-* Python virtual environment created
-* Git repository initialized
-* GitHub repository configured
-* Standard project structure established
-* `.gitignore` configured
-* `.env` and `.env.example` created
-* Secret-management approach established
-* `python-dotenv` added
-* `pytest` added
-* Initial Python application created
-* Mock LLM implemented
-* LLM abstraction implemented using an abstract base class
-* Dependency Injection introduced
-* Tool functions implemented (`add` and `multiply`)
-* `ToolCall` model implemented
-* `ToolRegistry` implemented
-* `Agent` class implemented
-* Agent Loop implemented
-* `AgentState` implemented
-* Tool results are retained in Agent State
-* Mock LLM can request a tool and later return a final answer
-* Automated tests implemented with pytest
+* Python virtual environment
+* Git and GitHub workflow
+* Environment variable management
+* `.env` and `.env.example`
+* Dependency management
+* Abstract LLM interface
+* Mock LLM implementation
+* Dependency Injection
+* Structured `LLMResponse`
+* ToolCall model
+* Tool Registry
+* Calculator tools
+* Agent implementation
+* Agent Loop
+* Agent State
+* Structured Message model
+* Typed Message Roles
+* Unit tests for LLM behavior
+* Unit tests for Message behavior
+* Unit tests for Agent behavior
+* Unit tests for Tool behavior
+* Error handling for unknown tools
+
+Current tools:
+
+```text
+add
+multiply
+```
+
+Current message roles:
+
+```text
+SYSTEM
+USER
+ASSISTANT
+TOOL
+```
 
 ## Repository Status
 
-The project is maintained in Git and synchronized with GitHub.
+The project is maintained using Git and GitHub.
 
-Current branch:
+Current main development branch:
 
 ```text
 master
 ```
 
-The working project uses `.venv` locally on each development machine.
+GitHub is the shared source of truth so development can continue across multiple machines.
 
-Sensitive environment configuration is stored in `.env` and must never be committed to Git.
+Real secrets must never be committed.
 
-The public/example configuration is stored in `.env.example`.
-
-GitHub repository:
-
-```text
-https://github.com/maherani/ai-agent-learning
-```
+`.env` is ignored by Git.
 
 ## Major Lessons Learned
 
-* A Python project should use an isolated virtual environment.
+* Virtual environments isolate project dependencies.
 * Dependencies should be explicitly tracked.
-* Secrets should not be hard-coded into source code.
-* `.env` should be ignored by Git.
-* `.env.example` should document required environment variables without containing real secrets.
-* Application logic should depend on abstractions rather than concrete implementations.
-* An LLM interface allows different LLM implementations to be substituted without changing Agent logic.
-* Dependency Injection reduces coupling between application logic and concrete implementations.
-* Mock implementations allow development and testing without requiring a real LLM API.
-* Automated tests should verify expected behavior rather than relying only on manual execution.
-* Tools should have focused responsibilities and be independently executable.
-* A Tool Registry allows tools to be selected and executed by name without hard-coding every tool into Agent logic.
-* An Agent must distinguish between a request for tool execution and a final response.
-* An Agent Loop allows the result of a tool to be returned to the LLM for the next decision.
-* Agent State is needed to retain information across multiple steps of an Agent execution.
-* Project documentation should be updated together with meaningful implementation milestones.
+* Secrets must be separated from source code.
+* LLM implementations should depend on an abstraction.
+* Dependency Injection reduces coupling.
+* Mock LLMs allow Agent development without a real API.
+* Tests should verify behavior rather than implementation details.
+* Parametrized tests can verify the same behavior across multiple inputs.
+* Tools should have focused responsibilities.
+* A Tool Registry decouples Agent logic from individual Tool implementations.
+* Tool errors must have explicit and testable behavior.
+* Agent responses can represent either a final answer or a Tool Call.
+* Agent Loops allow a Tool result to be returned to the LLM for further reasoning.
+* State allows the Agent to preserve information across multiple steps.
+* Structured Messages are preferable to storing conversation history as unstructured strings.
+* Typed message roles make the Agent state more explicit and maintainable.
 
 ## Current Known Good State
 
-The current application can be executed from the project root with:
+The application can be executed from the project root with:
 
 ```bash
 python -m app.main
 ```
 
-The current test suite can be executed with:
+The test suite can be executed with:
 
 ```bash
 python -m pytest
 ```
 
-Current known-good test result:
+Current known-good behavior:
 
 ```text
-3 passed
+Application
+    ↓
+Agent
+    ↓
+MockLLM
+    ↓
+ToolCall
+    ↓
+ToolRegistry
+    ↓
+Calculator
+    ↓
+Tool Result
+    ↓
+Agent Loop
+    ↓
+Final Answer
 ```
 
-The current Agent can demonstrate a Tool Calling flow using the Mock LLM:
+The current test suite passes successfully.
 
-```text
-CALCULATE 25 * 18
-        ↓
-LLM requests multiply
-        ↓
-multiply(25, 18)
-        ↓
-450
-        ↓
-LLM produces final answer
-```
-
-No real LLM API key is currently required for the implemented functionality.
+The project does not currently require a real LLM API key.
 
 ## Pending Work
 
-* Improve and formalize the LLM message/response model
-* Introduce structured messages for User, Assistant, Tool Call, and Tool Result
-* Add stronger Agent tests
+* Improve the message model
+* Introduce a more explicit conversation state
+* Separate LLM request messages from Agent internal state
 * Introduce a real LLM provider
-* Learn structured output with a real model
-* Replace the Mock LLM with a provider-backed implementation
-* Improve Agent state handling
-* Introduce conversation memory
+* Learn structured output from a real model
+* Implement real Tool Calling
+* Improve Agent error handling and retry behavior
+* Add more Agent tests
+* Introduce Memory
 * Implement RAG
-* Introduce LangChain after understanding the underlying concepts
-* Introduce LangGraph for stateful Agent workflows
+* Introduce LangChain
+* Introduce LangGraph
 
 ## Future Enhancements
 
@@ -228,7 +240,6 @@ No real LLM API key is currently required for the implemented functionality.
 * RAG pipeline
 * Multi-Agent architecture
 * Docker
-* Observability
 * Prometheus
 * Grafana
 * Agent evaluation
@@ -236,43 +247,43 @@ No real LLM API key is currently required for the implemented functionality.
 
 ## Next Recommended Step
 
-The next learning step is to replace the current `list[str]` state representation with structured message objects.
+The next learning objective is to improve the conversation model.
 
-The intended model is:
+Current State uses structured `Message` objects, but the Agent still converts the conversation into plain text before sending it to the Mock LLM.
 
-```text
-Message
-├── role
-├── content
-└── metadata
-```
-
-The Agent should be able to distinguish clearly between:
+The next step is to separate:
 
 ```text
-User Message
-Assistant Message
-Tool Call
-Tool Result
+Internal Agent State
+        ↓
+LLM Message Format
 ```
 
-This will provide the foundation for conversation history, memory, real LLM integration, and later LangGraph state management.
+and understand how real LLM APIs represent:
+
+```text
+system
+user
+assistant
+tool call
+tool result
+```
+
+before connecting a real LLM provider.
 
 ## Notes For Future Sessions
 
 Learning methodology:
 
-1. Explain the concept first.
-2. Explain why the architectural decision is being made.
+1. Understand the concept first.
+2. Understand why the architectural decision is being made.
 3. Implement one small piece.
 4. Run and verify it.
-5. Test understanding with small modifications.
-6. Update the project documentation.
+5. Test understanding with deliberate small changes.
+6. Update documentation.
 7. Commit and push the known-good state.
-8. Continue to the next step only after the current concept is understood.
+8. Continue only after the current concept is understood.
 
-The objective is understanding and engineering ability, not copying code.
+The objective is to develop independent AI Agent engineering ability, not merely reproduce code.
 
-The project is designed to be developed across multiple machines, with GitHub acting as the shared source of truth.
-
-At the current stage, no real LLM API key is required.
+The current project is intentionally built from fundamentals before introducing LangChain or LangGraph.
