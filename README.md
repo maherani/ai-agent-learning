@@ -6,7 +6,7 @@ The project is intentionally developed step by step, with an emphasis on underst
 
 ## Current Stage
 
-The project has completed its initial architecture and testing foundation.
+The project has completed its initial LLM abstraction, Tool execution, Agent Loop, and State foundation.
 
 Implemented so far:
 
@@ -19,29 +19,53 @@ Implemented so far:
 * Mock LLM
 * LLM abstraction
 * Dependency Injection
-* Initial automated test with pytest
+* Tool functions
+* ToolCall model
+* Tool Registry
+* Agent class
+* Agent Loop
+* Agent State
+* Automated tests with pytest
 
-Current test status:
+Current known-good test status:
 
 ```text
-1 passed
+3 passed
 ```
 
 ## Current Architecture
 
 ```text
-Application
+User Prompt
     ↓
-Agent Execution Function
+Agent
+    ↓
+AgentState
     ↓
 LLM Abstraction
     ↓
 Mock LLM
-    ↓
-Response
+    │
+    ├── Final Text ──────────────→ Final Answer
+    │
+    └── Tool Call
+            ↓
+       Tool Registry
+            ↓
+           Tool
+            ↓
+        Tool Result
+            ↓
+          State
+            ↓
+           LLM
+            ↓
+       Final Answer
 ```
 
-The LLM implementation is intentionally abstracted so that a real provider can be introduced later without changing the core Agent logic.
+The Agent receives an LLM implementation and a Tool Registry through dependency injection.
+
+The current implementation uses a Mock LLM so that Agent behavior can be learned and tested without requiring a real LLM API key.
 
 ## Learning Roadmap
 
@@ -111,7 +135,7 @@ python -m pytest
 Before starting work:
 
 ```bash
-git pull
+git pull origin master
 ```
 
 After completing a verified change:
